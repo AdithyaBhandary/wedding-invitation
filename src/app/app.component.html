@@ -1,0 +1,86 @@
+<main [class.is-entered]="entered">
+  <section class="cover" [class.cover--opening]="opening" [class.cover--hidden]="entered" aria-label="Save the date cover">
+    <div class="cover__paper"></div>
+    <div class="cover__tag">A little note for you</div>
+    <button class="seal" type="button" (click)="enterInvitation()" aria-label="Open invitation">
+      <span>Save</span>
+      <small>the</small>
+      <span>Date</span>
+    </button>
+    <p class="cover__hint">Tap the seal to open</p>
+  </section>
+
+  <div id="invitation" class="invitation" [attr.aria-hidden]="!entered">
+    <section class="welcome section-light reveal">
+      <div class="ganesha">ॐ</div>
+      <p class="eyebrow">With the blessings of Shree Kachhuru Nageshwara</p>
+      <p class="story">“{{ invitation.story }}”</p>
+      <div class="petals" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+    </section>
+
+    <section class="names section-light reveal">
+      <p class="eyebrow">Together with their families</p>
+      <h1>{{ invitation.groom }}</h1>
+      <div class="ampersand">&amp;</div>
+      <h1>{{ invitation.bride }}</h1>
+      <p class="names__copy">invite you to celebrate the beginning of their forever.</p>
+      <div class="rule"></div>
+      <p class="date-line">{{ invitation.date }} · {{ invitation.time }}</p>
+    </section>
+
+    <section class="scratch-section section-dark reveal">
+      <p class="eyebrow eyebrow--soft">A little surprise</p>
+      <h2>Save the Date</h2>
+      <p class="section-subtitle">Scratch to reveal the details</p>
+      <div class="scroll-card">
+        <div class="scroll-roll scroll-roll--top"></div>
+        <div class="scroll-message" [class.scroll-message--revealed]="scratched">
+          <span class="month">November</span>
+          <strong>Sunday, 22</strong>
+          <span class="year">2026</span>
+          <span>{{ invitation.time }}</span>
+        </div>
+        <canvas #scratchCanvas class="scratch-layer" (pointermove)="$event.buttons && scratch($event)" (pointerdown)="scratch($event)" aria-label="Scratch card"></canvas>
+        <div class="scroll-roll scroll-roll--bottom"></div>
+      </div>
+      <p class="scratch-note">Use your finger across the card</p>
+    </section>
+
+    <section class="timeline section-light reveal">
+      <p class="eyebrow">The celebration</p>
+      <h2>Event Timeline</h2>
+      <div class="timeline__items">
+        <article><span class="timeline__dot"></span><div><h3>Muhurtham</h3><p>10:45 AM</p></div></article>
+        <article><span class="timeline__dot"></span><div><h3>Lunch</h3><p>12:30 PM</p></div></article>
+      </div>
+    </section>
+
+    <section class="venue section-light reveal">
+      <p class="eyebrow">The gathering place</p>
+      <h2>Venue</h2>
+      <p class="venue__name">{{ invitation.venue }}</p>
+      <div class="map-card" aria-label="Illustrated map to the venue">
+        <span class="map-road map-road--one"></span><span class="map-road map-road--two"></span><span class="map-pin">♥</span>
+        <span class="map-label">Vitla</span>
+      </div>
+      <button class="button" type="button" (click)="openMaps()">View on Google Maps ↗</button>
+    </section>
+
+    <section class="closing section-dark reveal">
+      <div class="closing__frame">
+        <p class="eyebrow eyebrow--soft">With love,</p>
+        <h2>Adithya <span>&amp;</span> Sameeksha</h2>
+        <p>We cannot wait to celebrate this beautiful day with you.</p>
+        <p class="countdown__label">Counting Down</p>
+        <div class="countdown" aria-label="Time until the wedding">
+          <div><strong>{{ countdown.days }}</strong><span>Days</span></div>
+          <div><strong>{{ countdown.hours | number: '2.0-0' }}</strong><span>Hours</span></div>
+          <div><strong>{{ countdown.minutes | number: '2.0-0' }}</strong><span>Minutes</span></div>
+          <div><strong>{{ countdown.seconds | number: '2.0-0' }}</strong><span>Seconds</span></div>
+        </div>
+        <div class="closing__rings">◌ ◌</div>
+        <p class="closing__signoff">See you there</p>
+      </div>
+    </section>
+  </div>
+</main>

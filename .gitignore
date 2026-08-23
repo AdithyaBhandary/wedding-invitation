@@ -1,0 +1,19 @@
+# Angular build output
+/dist
+
+# Dependencies
+/node_modules
+
+# Angular and local tooling caches
+/.angular
+/.angular-home
+/.npm-cache
+
+# Editor and OS files
+.vscode/
+.DS_Store
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
