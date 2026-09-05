@@ -1,5 +1,6 @@
 import { DecimalPipe } from '@angular/common';
 import { AfterViewInit, Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
+import { WITH_BLESSINGS } from './with-blessings.const';
 
 @Component({
   selector: 'app-root',
@@ -15,12 +16,13 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   protected opening = false;
   protected scratched = false;
   protected countdown = { days: 0, hours: 0, minutes: 0, seconds: 0 };
+  protected readonly withBlessings = WITH_BLESSINGS;
   protected readonly invitation = {
     groom: 'Adithya',
     bride: 'Sameeksha',
     date: 'Sunday, 22 November 2026',
     shortDate: '22.11.2026',
-    time: '10:45 AM',
+    time: '11:45 AM',
     venue: 'Kacchuru Nageshwara temple, Barkur, Udupi',
     address: 'Udupi, Karnataka',
     story: 'Two hearts, two journeys, and two beautifully different worlds came together at just the right moment. What began as a simple connection slowly blossomed into a bond filled with love, laughter, and countless memories. Today, we celebrate the beginning of a beautiful journey together.'

@@ -1,7 +1,6 @@
 <main [class.is-entered]="entered">
   <section class="cover" [class.cover--opening]="opening" [class.cover--hidden]="entered" aria-label="Save the date cover">
     <div class="cover__paper"></div>
-    <div class="cover__tag">A little note for you</div>
     <button class="seal" type="button" (click)="enterInvitation()" aria-label="Open invitation">
       <span>Save</span>
       <small>the</small>
@@ -63,7 +62,6 @@
     </section> -->
 
     <section class="scratch-section section-dark reveal">
-      <p class="eyebrow eyebrow--soft">A little surprise</p>
       <h2>Save the Date</h2>
       <p class="section-subtitle">Scratch to reveal the details</p>
       <div class="scroll-card">
@@ -80,17 +78,43 @@
       <p class="scratch-note">Use your finger across the card</p>
     </section>
 
+    <section class="with-blessings reveal" aria-labelledby="with-blessings-heading">
+      <div class="with-blessings__card">
+        <p class="with-blessings__heading" id="with-blessings-heading">{{ withBlessings.heading }}</p>
+        <p class="with-blessings__message">{{ withBlessings.message }}</p>
+        <div class="with-blessings__families">
+          <article class="with-blessings__family">
+            <h2>{{ withBlessings.groom.name }}</h2>
+            <p class="with-blessings__relation">{{ withBlessings.groom.relation }}</p>
+            <p>{{ withBlessings.groom.parents }}</p>
+          </article>
+          <p class="with-blessings__connector">{{ withBlessings.connector }}</p>
+          <article class="with-blessings__family">
+            <h2>{{ withBlessings.bride.name }}</h2>
+            <p class="with-blessings__relation">{{ withBlessings.bride.relation }}</p>
+            <p>{{ withBlessings.bride.parents }}</p>
+          </article>
+        </div>
+        <div class="with-blessings__detail">
+          <p class="with-blessings__label">{{ withBlessings.dateLabel }}</p>
+          <p>{{ withBlessings.date }}</p>
+        </div>
+        <div class="with-blessings__detail">
+          <p class="with-blessings__label">{{ withBlessings.venueLabel }}</p>
+          <p>{{ withBlessings.venue }}</p>
+        </div>
+      </div>
+    </section>
+
     <section class="timeline section-light reveal">
-      <p class="eyebrow">The celebration</p>
       <h2>Event Timeline</h2>
       <div class="timeline__items">
-        <article><span class="timeline__dot"></span><div><h3>Muhurtham</h3><p>10:45 AM</p></div></article>
+        <article><span class="timeline__dot"></span><div><h3>Muhurtham</h3><p>11:45 AM</p></div></article>
         <article><span class="timeline__dot"></span><div><h3>Lunch</h3><p>12:30 PM</p></div></article>
       </div>
     </section>
 
     <section class="venue section-light reveal">
-      <p class="eyebrow">The gathering place</p>
       <h2>Venue</h2>
       <p class="venue__name">{{ invitation.venue }}</p>
       <div class="map-card" aria-label="Illustrated map to the venue">
