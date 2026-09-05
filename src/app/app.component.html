@@ -11,7 +11,6 @@
 
   <div id="invitation" class="invitation" [attr.aria-hidden]="!entered">
     <section class="opening-names reveal" aria-labelledby="opening-names-title">
-      <div class="opening-names__border" aria-hidden="true"></div>
       <div class="opening-names__falling-flowers" aria-hidden="true">
         <span class="falling-flower falling-flower--one"></span>
         <span class="falling-flower falling-flower--two"></span>
@@ -32,16 +31,18 @@
       <!-- <img class="opening-names__couple-art" src="./assets/bride-groom.svg" alt="Bride and groom illustration" /> -->
       <div class="opening-names__petal opening-names__petal--one" aria-hidden="true"></div>
       <div class="opening-names__petal opening-names__petal--two" aria-hidden="true"></div>
-      <div class="opening-names__wreath" aria-hidden="true">
-        <span class="opening-names__leaf opening-names__leaf--one"></span>
-        <span class="opening-names__leaf opening-names__leaf--two"></span>
-        <span class="opening-names__leaf opening-names__leaf--three"></span>
-        <span class="opening-names__leaf opening-names__leaf--four"></span>
-        <span class="opening-names__flower opening-names__flower--one">✦</span>
-        <span class="opening-names__flower opening-names__flower--two">✦</span>
-      </div>
-      <div class="opening-names__content">
-        <h1 id="opening-names-title"><span>{{ invitation.groom }}</span><b>&amp;</b><span>{{ invitation.bride }}</span></h1>
+      <div class="opening-names__centerpiece">
+          <div class="opening-names__wreath" aria-hidden="true">
+            <span class="opening-names__leaf opening-names__leaf--one"></span>
+            <span class="opening-names__leaf opening-names__leaf--two"></span>
+            <span class="opening-names__leaf opening-names__leaf--three"></span>
+            <span class="opening-names__leaf opening-names__leaf--four"></span>
+            <span class="opening-names__flower opening-names__flower--one">✦</span>
+            <span class="opening-names__flower opening-names__flower--two">✦</span>
+          </div>
+        <div class="opening-names__content">
+          <h1 id="opening-names-title"><span>{{ invitation.groom }}</span><b>&amp;</b><span>{{ invitation.bride }}</span></h1>
+        </div>
       </div>
     </section>
     <section class="welcome section-light reveal">
