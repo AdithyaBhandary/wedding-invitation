@@ -11,14 +11,48 @@
   </section>
 
   <div id="invitation" class="invitation" [attr.aria-hidden]="!entered">
+    <section class="opening-names reveal" aria-labelledby="opening-names-title">
+      <div class="opening-names__border" aria-hidden="true"></div>
+      <div class="opening-names__falling-flowers" aria-hidden="true">
+        <span class="falling-flower falling-flower--one"></span>
+        <span class="falling-flower falling-flower--two"></span>
+        <span class="falling-flower falling-flower--three"></span>
+        <span class="falling-flower falling-flower--four"></span>
+        <span class="falling-flower falling-flower--five"></span>
+        <span class="falling-flower falling-flower--six"></span>
+        <span class="falling-flower falling-flower--seven"></span>
+        <span class="falling-flower falling-flower--eight"></span>
+        <span class="falling-flower falling-flower--nine"></span>
+        <span class="falling-flower falling-flower--ten"></span>
+        <span class="falling-petal falling-petal--one"></span>
+        <span class="falling-petal falling-petal--two"></span>
+        <span class="falling-petal falling-petal--three"></span>
+        <span class="falling-petal falling-petal--four"></span>
+        <span class="falling-petal falling-petal--five"></span>
+      </div>
+      <!-- <img class="opening-names__couple-art" src="./assets/bride-groom.svg" alt="Bride and groom illustration" /> -->
+      <div class="opening-names__petal opening-names__petal--one" aria-hidden="true"></div>
+      <div class="opening-names__petal opening-names__petal--two" aria-hidden="true"></div>
+      <div class="opening-names__wreath" aria-hidden="true">
+        <span class="opening-names__leaf opening-names__leaf--one"></span>
+        <span class="opening-names__leaf opening-names__leaf--two"></span>
+        <span class="opening-names__leaf opening-names__leaf--three"></span>
+        <span class="opening-names__leaf opening-names__leaf--four"></span>
+        <span class="opening-names__flower opening-names__flower--one">✦</span>
+        <span class="opening-names__flower opening-names__flower--two">✦</span>
+      </div>
+      <div class="opening-names__content">
+        <h1 id="opening-names-title"><span>{{ invitation.groom }}</span><b>&amp;</b><span>{{ invitation.bride }}</span></h1>
+      </div>
+    </section>
     <section class="welcome section-light reveal">
-      <div class="ganesha">ॐ</div>
-      <p class="eyebrow">With the blessings of Shree Kachhuru Nageshwara</p>
+      <!-- <div class="ganesha">ॐ</div>
+      <p class="eyebrow">With the blessings of Shree Kachhuru Nageshwara</p> -->
       <p class="story">“{{ invitation.story }}”</p>
       <div class="petals" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
     </section>
 
-    <section class="names section-light reveal">
+    <!-- <section class="names section-light reveal">
       <p class="eyebrow">Together with their families</p>
       <h1>{{ invitation.groom }}</h1>
       <div class="ampersand">&amp;</div>
@@ -26,7 +60,7 @@
       <p class="names__copy">invite you to celebrate the beginning of their forever.</p>
       <div class="rule"></div>
       <p class="date-line">{{ invitation.date }} · {{ invitation.time }}</p>
-    </section>
+    </section> -->
 
     <section class="scratch-section section-dark reveal">
       <p class="eyebrow eyebrow--soft">A little surprise</p>
@@ -61,7 +95,7 @@
       <p class="venue__name">{{ invitation.venue }}</p>
       <div class="map-card" aria-label="Illustrated map to the venue">
         <span class="map-road map-road--one"></span><span class="map-road map-road--two"></span><span class="map-pin">♥</span>
-        <span class="map-label">Vitla</span>
+        <span class="map-label">Barkuru</span>
       </div>
       <button class="button" type="button" (click)="openMaps()">View on Google Maps ↗</button>
     </section>
