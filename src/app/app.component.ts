@@ -45,7 +45,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   private celebrationStarted = false;
   private revealObserver?: IntersectionObserver;
   private backgroundMusic?: HTMLAudioElement;
-  private readonly musicSource = '/assets/Ubhayakushala.mp3.mpeg';
+  private readonly musicSource = 'assets/Ubhayakushala.mp3.mpeg';
 
   ngAfterViewInit(): void {
     this.prepareScratchCard();
@@ -236,7 +236,8 @@ export class AppComponent implements AfterViewInit, OnDestroy {
 
   private startBackgroundMusic(): void {
     if (!this.backgroundMusic) {
-      this.backgroundMusic = new Audio(this.musicSource);
+      this.backgroundMusic = new Audio();
+      this.backgroundMusic.src = this.musicSource;
       this.backgroundMusic.loop = true;
       this.backgroundMusic.volume = 0.6;
       this.backgroundMusic.preload = 'auto';
@@ -248,6 +249,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       return;
     }
 
+    this.backgroundMusic.load();
     void this.backgroundMusic.play().catch(() => {
       this.musicMuted = true;
       this.backgroundMusic!.muted = true;
