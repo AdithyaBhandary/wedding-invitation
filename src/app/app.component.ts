@@ -44,6 +44,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   private revealCompleted = false;
   private celebrationStarted = false;
   private revealObserver?: IntersectionObserver;
+  private sectionRevealObserver?: IntersectionObserver;
   private backgroundMusic?: HTMLAudioElement;
   private readonly musicSource = 'assets/Ubhayakushala.mp3.mpeg';
 
@@ -51,6 +52,23 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     this.prepareScratchCard();
     this.updateCountdown();
     this.countdownTimer = window.setInterval(() => this.updateCountdown(), 1000);
+
+    const revealSections = document.querySelectorAll('.reveal');
+    this.sectionRevealObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+        } else {
+          entry.target.classList.remove('is-visible');
+        }
+      });
+    }, {
+      threshold: 0.12,
+      rootMargin: '0px 0px -8% 0px'
+    });
+
+    revealSections.forEach((section) => this.sectionRevealObserver?.observe(section));
+
     const section = this.scratchSection?.nativeElement;
     if (!section) return;
 
@@ -69,6 +87,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   ngOnDestroy(): void {
     if (this.countdownTimer) window.clearInterval(this.countdownTimer);
     this.revealObserver?.disconnect();
+    this.sectionRevealObserver?.disconnect();
   }
 
   protected enterInvitation(): void {
