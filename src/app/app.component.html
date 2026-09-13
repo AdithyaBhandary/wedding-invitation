@@ -70,9 +70,89 @@
       <p class="date-line">{{ invitation.date }} · {{ invitation.time }}</p>
     </section> -->
 
-    <section class="scratch-section section-dark reveal">
+    <section #scratchSection class="scratch-section section-dark reveal">
       <h2>Save the Date</h2>
       <p class="section-subtitle">Scratch to reveal the details</p>
+      <div class="scratch-section__celebration" aria-hidden="true">
+        <span class="celebration-flower celebration-flower--1"></span>
+        <span class="celebration-flower celebration-flower--2"></span>
+        <span class="celebration-flower celebration-flower--3"></span>
+        <span class="celebration-flower celebration-flower--4"></span>
+        <span class="celebration-flower celebration-flower--5"></span>
+        <span class="celebration-flower celebration-flower--6"></span>
+        <span class="celebration-flower celebration-flower--7"></span>
+        <span class="celebration-flower celebration-flower--8"></span>
+        <span class="celebration-flower celebration-flower--9"></span>
+        <span class="celebration-flower celebration-flower--10"></span>
+        <span class="celebration-flower celebration-flower--11"></span>
+        <span class="celebration-flower celebration-flower--12"></span>
+        <span class="celebration-flower celebration-flower--13"></span>
+        <span class="celebration-flower celebration-flower--14"></span>
+        <span class="celebration-flower celebration-flower--15"></span>
+        <span class="celebration-flower celebration-flower--16"></span>
+        <span class="celebration-flower celebration-flower--17"></span>
+        <span class="celebration-flower celebration-flower--18"></span>
+        <span class="celebration-flower celebration-flower--19"></span>
+        <span class="celebration-flower celebration-flower--20"></span>
+        <span class="celebration-flower celebration-flower--21"></span>
+        <span class="celebration-flower celebration-flower--22"></span>
+        <span class="celebration-flower celebration-flower--23"></span>
+        <span class="celebration-flower celebration-flower--24"></span>
+        <span class="celebration-flower celebration-flower--25"></span>
+        <span class="celebration-flower celebration-flower--26"></span>
+        <span class="celebration-flower celebration-flower--27"></span>
+        <span class="celebration-flower celebration-flower--28"></span>
+        <span class="celebration-flower celebration-flower--29"></span>
+        <span class="celebration-flower celebration-flower--30"></span>
+        <span class="paper-blast paper-blast--1"></span>
+        <span class="paper-blast paper-blast--2"></span>
+        <span class="paper-blast paper-blast--3"></span>
+        <span class="paper-blast paper-blast--4"></span>
+        <span class="paper-blast paper-blast--5"></span>
+        <span class="paper-blast paper-blast--6"></span>
+        <span class="paper-blast paper-blast--7"></span>
+        <span class="paper-blast paper-blast--8"></span>
+        <span class="paper-blast paper-blast--9"></span>
+        <span class="paper-blast paper-blast--10"></span>
+        <span class="paper-blast paper-blast--11"></span>
+        <span class="paper-blast paper-blast--12"></span>
+        <span class="paper-blast paper-blast--13"></span>
+        <span class="paper-blast paper-blast--14"></span>
+        <span class="paper-blast paper-blast--15"></span>
+        <span class="paper-blast paper-blast--16"></span>
+        <span class="paper-blast paper-blast--17"></span>
+        <span class="paper-blast paper-blast--18"></span>
+        <span class="paper-blast paper-blast--19"></span>
+        <span class="paper-blast paper-blast--20"></span>
+        <span class="paper-blast paper-blast--21"></span>
+        <span class="paper-blast paper-blast--22"></span>
+        <span class="paper-blast paper-blast--23"></span>
+        <span class="paper-blast paper-blast--24"></span>
+        <span class="paper-blast paper-blast--25"></span>
+        <span class="paper-blast paper-blast--26"></span>
+        <span class="paper-blast paper-blast--27"></span>
+        <span class="paper-blast paper-blast--28"></span>
+        <span class="paper-blast paper-blast--29"></span>
+        <span class="paper-blast paper-blast--30"></span>
+        <span class="paper-blast paper-blast--31"></span>
+        <span class="paper-blast paper-blast--32"></span>
+        <span class="paper-blast paper-blast--33"></span>
+        <span class="paper-blast paper-blast--34"></span>
+        <span class="paper-blast paper-blast--35"></span>
+        <span class="paper-blast paper-blast--36"></span>
+        <span class="paper-blast paper-blast--37"></span>
+        <span class="paper-blast paper-blast--38"></span>
+        <span class="paper-blast paper-blast--39"></span>
+        <span class="paper-blast paper-blast--40"></span>
+        <span class="paper-blast paper-blast--41"></span>
+        <span class="paper-blast paper-blast--42"></span>
+        <span class="paper-blast paper-blast--43"></span>
+        <span class="paper-blast paper-blast--44"></span>
+        <span class="paper-blast paper-blast--45"></span>
+        <span class="paper-blast paper-blast--46"></span>
+        <span class="paper-blast paper-blast--47"></span>
+        <span class="paper-blast paper-blast--48"></span>
+      </div>
       <div class="scroll-card">
         <div class="scroll-roll scroll-roll--top"></div>
         <div class="scroll-message" [class.scroll-message--revealed]="scratched">
@@ -81,7 +161,15 @@
           <span class="year">2026</span>
           <span>{{ invitation.time }}</span>
         </div>
-        <canvas #scratchCanvas class="scratch-layer" (pointermove)="$event.buttons && scratch($event)" (pointerdown)="scratch($event)" aria-label="Scratch card"></canvas>
+        <canvas
+          #scratchCanvas
+          class="scratch-layer"
+          (pointerdown)="startScratch($event)"
+          (pointermove)="scratch($event)"
+          (pointerup)="endScratch($event)"
+          (pointerleave)="endScratch()"
+          (pointercancel)="endScratch()"
+          aria-label="Scratch card"></canvas>
         <div class="scroll-roll scroll-roll--bottom"></div>
       </div>
       <p class="scratch-note">Use your finger across the card</p>

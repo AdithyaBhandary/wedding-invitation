@@ -11,6 +11,7 @@ import { WITH_BLESSINGS } from './with-blessings.const';
 })
 export class AppComponent implements AfterViewInit, OnDestroy {
   @ViewChild('scratchCanvas') scratchCanvas?: ElementRef<HTMLCanvasElement>;
+  @ViewChild('scratchSection') scratchSection?: ElementRef<HTMLElement>;
 
   protected entered = false;
   protected opening = false;
@@ -30,16 +31,40 @@ export class AppComponent implements AfterViewInit, OnDestroy {
 
   private context?: CanvasRenderingContext2D;
   private scratchCount = 0;
+  private scratchDistance = 0;
+  private isScratching = false;
+  private scratchProgress = 0;
+  private lastScratchPoint?: { x: number; y: number };
+  private readonly scratchRevealThreshold = 0.28;
+  private readonly scratchDistanceThreshold = 900;
+  private readonly scratchCountThreshold = 18;
   private countdownTimer?: number;
+  private revealCompleted = false;
+  private celebrationStarted = false;
+  private revealObserver?: IntersectionObserver;
 
   ngAfterViewInit(): void {
     this.prepareScratchCard();
     this.updateCountdown();
     this.countdownTimer = window.setInterval(() => this.updateCountdown(), 1000);
+    const section = this.scratchSection?.nativeElement;
+    if (!section) return;
+
+    this.revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          this.revealCompleted = true;
+          this.tryStartCelebration();
+        }
+      });
+    }, { threshold: 0.45 });
+
+    this.revealObserver.observe(section);
   }
 
   ngOnDestroy(): void {
     if (this.countdownTimer) window.clearInterval(this.countdownTimer);
+    this.revealObserver?.disconnect();
   }
 
   protected enterInvitation(): void {
@@ -67,25 +92,124 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     };
   }
 
+  protected startScratch(event: PointerEvent): void {
+    if (event.button !== 0 && event.pointerType !== 'touch') {
+      return;
+    }
+
+    event.preventDefault();
+    this.isScratching = true;
+    const canvas = this.scratchCanvas?.nativeElement;
+    if (canvas && typeof canvas.setPointerCapture === 'function') {
+      try {
+        canvas.setPointerCapture(event.pointerId);
+      } catch {
+        // ignore stale pointer capture requests from synthetic or canceled events
+      }
+    }
+
+    this.lastScratchPoint = this.getScratchPoint(event);
+    this.scratchDistance = 0;
+    this.scratchCount = 0;
+    this.scratchProgress = 0;
+  }
+
   protected scratch(event: PointerEvent): void {
-    if (!this.context || !this.scratchCanvas) return;
+    if (!this.isScratching || !this.context || !this.scratchCanvas) return;
+    if (event.buttons === 0 && event.pointerType !== 'touch') return;
+
+    const nextPoint = this.getScratchPoint(event);
+    const previousPoint = this.lastScratchPoint ?? nextPoint;
+    const distance = Math.hypot(nextPoint.x - previousPoint.x, nextPoint.y - previousPoint.y);
+    if (distance > 0) {
+      this.scratchDistance += distance;
+    }
+
+    this.context.globalCompositeOperation = 'destination-out';
+    this.context.lineWidth = 58;
+    this.context.lineCap = 'round';
+    this.context.lineJoin = 'round';
+    this.context.beginPath();
+    this.context.moveTo(previousPoint.x, previousPoint.y);
+    this.context.lineTo(nextPoint.x, nextPoint.y);
+    this.context.stroke();
+    this.context.beginPath();
+    this.context.arc(nextPoint.x, nextPoint.y, 30, 0, Math.PI * 2);
+    this.context.fill();
+
+    this.lastScratchPoint = nextPoint;
+    this.scratchCount++;
+    this.scratchProgress = this.getScratchProgress();
+
+    const shouldReveal = this.scratchDistance >= this.scratchDistanceThreshold || this.scratchCount >= this.scratchCountThreshold || this.scratchProgress >= this.scratchRevealThreshold;
+    if (shouldReveal) {
+      this.scratched = true;
+      this.revealCompleted = true;
+      this.tryStartCelebration();
+    }
+  }
+
+  protected endScratch(event?: PointerEvent): void {
+    if (event && this.scratchCanvas?.nativeElement && typeof this.scratchCanvas.nativeElement.releasePointerCapture === 'function') {
+      try {
+        this.scratchCanvas.nativeElement.releasePointerCapture(event.pointerId);
+      } catch {
+        // ignore pointer release errors from stale interactions
+      }
+    }
+
+    this.isScratching = false;
+    this.lastScratchPoint = undefined;
+
+    const shouldReveal = this.scratchDistance >= this.scratchDistanceThreshold || this.scratchCount >= this.scratchCountThreshold || this.scratchProgress >= this.scratchRevealThreshold;
+    if (shouldReveal) {
+      this.scratched = true;
+      this.revealCompleted = true;
+      this.tryStartCelebration();
+    }
+  }
+
+  private getScratchProgress(): number {
+    if (!this.context || !this.scratchCanvas) return 0;
     const canvas = this.scratchCanvas.nativeElement;
+    const imageData = this.context.getImageData(0, 0, canvas.width, canvas.height).data;
+    let transparentPixels = 0;
+
+    for (let index = 3; index < imageData.length; index += 4) {
+      if (imageData[index] < 20) {
+        transparentPixels++;
+      }
+    }
+
+    return transparentPixels / (canvas.width * canvas.height);
+  }
+
+  private getScratchPoint(event: PointerEvent): { x: number; y: number } {
+    const canvas = this.scratchCanvas?.nativeElement;
+    if (!canvas) return { x: 0, y: 0 };
+
     const bounds = canvas.getBoundingClientRect();
     const scaleX = canvas.width / bounds.width;
     const scaleY = canvas.height / bounds.height;
-    const x = (event.clientX - bounds.left) * scaleX;
-    const y = (event.clientY - bounds.top) * scaleY;
-    this.context.globalCompositeOperation = 'destination-out';
-    this.context.beginPath();
-    this.context.arc(x, y, 30 * Math.min(scaleX, scaleY), 0, Math.PI * 2);
-    this.context.fill();
-    this.scratchCount++;
-    if (this.scratchCount > 32) this.scratched = true;
+    return {
+      x: (event.clientX - bounds.left) * scaleX,
+      y: (event.clientY - bounds.top) * scaleY
+    };
+  }
+
+  private tryStartCelebration(): void {
+    if (this.celebrationStarted || !this.revealCompleted || !this.scratched) return;
+
+    this.celebrationStarted = true;
+    const section = this.scratchSection?.nativeElement;
+    if (section) section.classList.add('is-celebrating');
   }
 
   private prepareScratchCard(): void {
     this.scratched = false;
     this.scratchCount = 0;
+    this.scratchDistance = 0;
+    this.scratchProgress = 0;
     if (!this.scratchCanvas) return;
     const canvas = this.scratchCanvas.nativeElement;
     canvas.width = 700;
