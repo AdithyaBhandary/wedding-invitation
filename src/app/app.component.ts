@@ -1,11 +1,11 @@
-import { DecimalPipe } from '@angular/common';
+import { DecimalPipe, NgIf } from '@angular/common';
 import { AfterViewInit, Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
 import { WITH_BLESSINGS } from './with-blessings.const';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [DecimalPipe],
+  imports: [DecimalPipe, NgIf],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
@@ -16,6 +16,8 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   protected entered = false;
   protected opening = false;
   protected scratched = false;
+  protected musicVisible = false;
+  protected musicMuted = true;
   protected countdown = { days: 0, hours: 0, minutes: 0, seconds: 0 };
   protected readonly withBlessings = WITH_BLESSINGS;
   protected readonly invitation = {
@@ -42,6 +44,8 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   private revealCompleted = false;
   private celebrationStarted = false;
   private revealObserver?: IntersectionObserver;
+  private backgroundMusic?: HTMLAudioElement;
+  private readonly musicSource = '/assets/Ubhayakushala.mp3.mpeg';
 
   ngAfterViewInit(): void {
     this.prepareScratchCard();
@@ -70,10 +74,35 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   protected enterInvitation(): void {
     if (this.opening || this.entered) return;
     this.opening = true;
+    this.musicVisible = true;
+    this.musicMuted = false;
+    this.startBackgroundMusic();
     window.setTimeout(() => {
       this.entered = true;
       requestAnimationFrame(() => document.getElementById('invitation')?.scrollIntoView({ behavior: 'smooth' }));
     }, 760);
+  }
+
+  protected toggleMusic(): void {
+    if (!this.backgroundMusic) {
+      this.backgroundMusic = new Audio(this.musicSource);
+      this.backgroundMusic.loop = true;
+      this.backgroundMusic.volume = 0.6;
+      this.backgroundMusic.preload = 'auto';
+    }
+
+    this.musicMuted = !this.musicMuted;
+    this.backgroundMusic.muted = this.musicMuted;
+
+    if (!this.musicMuted) {
+      void this.backgroundMusic.play().catch(() => {
+        this.musicMuted = true;
+        this.backgroundMusic!.muted = true;
+      });
+      return;
+    }
+
+    this.backgroundMusic.pause();
   }
 
   protected openMaps(): void {
@@ -203,6 +232,26 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     this.celebrationStarted = true;
     const section = this.scratchSection?.nativeElement;
     if (section) section.classList.add('is-celebrating');
+  }
+
+  private startBackgroundMusic(): void {
+    if (!this.backgroundMusic) {
+      this.backgroundMusic = new Audio(this.musicSource);
+      this.backgroundMusic.loop = true;
+      this.backgroundMusic.volume = 0.6;
+      this.backgroundMusic.preload = 'auto';
+    }
+
+    this.backgroundMusic.muted = this.musicMuted;
+    if (this.musicMuted) {
+      this.backgroundMusic.pause();
+      return;
+    }
+
+    void this.backgroundMusic.play().catch(() => {
+      this.musicMuted = true;
+      this.backgroundMusic!.muted = true;
+    });
   }
 
   private prepareScratchCard(): void {
