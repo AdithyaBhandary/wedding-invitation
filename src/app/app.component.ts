@@ -23,7 +23,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   private scrollUpMinimumVisibleUntil = 0;
   private scrollUpHideTimeout?: number;
   private scrollUpHidden = false;
-  private readonly scrollUpMinimumDurationMs = 5000;
+  private readonly scrollUpMinimumDurationMs = 10000;
   protected readonly withBlessings = WITH_BLESSINGS;
   protected readonly invitation = {
     groom: 'Adithya',
