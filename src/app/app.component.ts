@@ -16,9 +16,14 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   protected entered = false;
   protected opening = false;
   protected scratched = false;
+  protected showScrollUp = true;
   protected musicVisible = false;
   protected musicMuted = true;
   protected countdown = { days: 0, hours: 0, minutes: 0, seconds: 0 };
+  private scrollUpMinimumVisibleUntil = 0;
+  private scrollUpHideTimeout?: number;
+  private scrollUpHidden = false;
+  private readonly scrollUpMinimumDurationMs = 5000;
   protected readonly withBlessings = WITH_BLESSINGS;
   protected readonly invitation = {
     groom: 'Adithya',
@@ -47,11 +52,13 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   private sectionRevealObserver?: IntersectionObserver;
   private backgroundMusic?: HTMLAudioElement;
   private readonly musicSource = 'assets/Ubhayakushala.mp3.mpeg';
+  private hideScrollUpListenerBound = false;
 
   ngAfterViewInit(): void {
     this.prepareScratchCard();
     this.updateCountdown();
     this.countdownTimer = window.setInterval(() => this.updateCountdown(), 1000);
+    this.bindScrollUpHideListener();
 
     const revealSections = document.querySelectorAll('.reveal');
     this.sectionRevealObserver = new IntersectionObserver((entries) => {
@@ -88,11 +95,64 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     if (this.countdownTimer) window.clearInterval(this.countdownTimer);
     this.revealObserver?.disconnect();
     this.sectionRevealObserver?.disconnect();
+    if (this.scrollUpHideTimeout) {
+      window.clearTimeout(this.scrollUpHideTimeout);
+    }
+    if (this.hideScrollUpListenerBound) {
+      window.removeEventListener('scroll', this.hideScrollUpOnce, { passive: true } as AddEventListenerOptions);
+      window.removeEventListener('wheel', this.hideScrollUpOnce, { passive: true } as AddEventListenerOptions);
+      window.removeEventListener('touchmove', this.hideScrollUpOnce, { passive: true } as AddEventListenerOptions);
+    }
+  }
+
+  private readonly hideScrollUpOnce = (): void => {
+    if (this.scrollUpHidden || !this.showScrollUp) return;
+
+    const remaining = Math.max(0, this.scrollUpMinimumVisibleUntil - Date.now());
+    if (remaining > 0) {
+      if (this.scrollUpHideTimeout) {
+        window.clearTimeout(this.scrollUpHideTimeout);
+      }
+      this.scrollUpHideTimeout = window.setTimeout(() => this.hideScrollUpNow(), remaining);
+      return;
+    }
+
+    this.hideScrollUpNow();
+  };
+
+  private hideScrollUpNow(): void {
+    if (this.scrollUpHidden || !this.showScrollUp) return;
+    this.scrollUpHidden = true;
+    this.showScrollUp = false;
+    this.hideScrollUpListenerBound = false;
+    if (this.scrollUpHideTimeout) {
+      window.clearTimeout(this.scrollUpHideTimeout);
+      this.scrollUpHideTimeout = undefined;
+    }
+    window.removeEventListener('scroll', this.hideScrollUpOnce, { passive: true } as AddEventListenerOptions);
+    window.removeEventListener('wheel', this.hideScrollUpOnce, { passive: true } as AddEventListenerOptions);
+    window.removeEventListener('touchmove', this.hideScrollUpOnce, { passive: true } as AddEventListenerOptions);
+  }
+
+  private bindScrollUpHideListener(): void {
+    if (this.hideScrollUpListenerBound) return;
+    this.hideScrollUpListenerBound = true;
+    window.addEventListener('scroll', this.hideScrollUpOnce, { passive: true });
+    window.addEventListener('wheel', this.hideScrollUpOnce, { passive: true });
+    window.addEventListener('touchmove', this.hideScrollUpOnce, { passive: true });
   }
 
   protected enterInvitation(): void {
     if (this.opening || this.entered) return;
     this.opening = true;
+    this.scrollUpHidden = false;
+    this.showScrollUp = true;
+    this.scrollUpMinimumVisibleUntil = Date.now() + this.scrollUpMinimumDurationMs;
+    if (this.scrollUpHideTimeout) {
+      window.clearTimeout(this.scrollUpHideTimeout);
+    }
+    this.scrollUpHideTimeout = window.setTimeout(() => this.hideScrollUpNow(), this.scrollUpMinimumDurationMs);
+    this.bindScrollUpHideListener();
     this.musicVisible = true;
     this.musicMuted = false;
     this.startBackgroundMusic();

@@ -1,5 +1,5 @@
 export const WITH_BLESSINGS = {
-  heading: 'WITH THE BLESSINGS OF KACCHURU SHREE NAGESHWARA',
+  heading: 'KACCHURU SHREE NAGESHWARA PRASANNA',
   message: 'With immense joy, we warmly welcome you to join us in celebrating our wedding and seek your blessings for our new journey together.',
   groom: {
     name: 'Adithya',
