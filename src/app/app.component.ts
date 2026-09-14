@@ -83,7 +83,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
         this.openingNameRevealTimeouts.push(wreathTimeout);
       }
       if (content) {
-        const contentTimeout = window.setTimeout(() => content.classList.add('is-visible'), 1400);
+        const contentTimeout = window.setTimeout(() => content.classList.add('is-visible'), 100);
         this.openingNameRevealTimeouts.push(contentTimeout);
       }
     });
