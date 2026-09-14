@@ -53,6 +53,41 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   private backgroundMusic?: HTMLAudioElement;
   private readonly musicSource = 'assets/Ubhayakushala.mp3.mpeg';
   private hideScrollUpListenerBound = false;
+  private openingNameRevealTimeouts: number[] = [];
+  private openingNameRevealTriggered = false;
+
+  private triggerOpeningNameReveal(): void {
+    if (this.openingNameRevealTriggered) return;
+    this.openingNameRevealTriggered = true;
+
+    const section = document.querySelector('.opening-names');
+    const brideGroom = document.querySelector('.opening-names__bride-groom');
+    const wreath = document.querySelector('.opening-names__wreath');
+    const content = document.querySelector('.opening-names__content');
+
+    this.openingNameRevealTimeouts.forEach((timeoutId) => window.clearTimeout(timeoutId));
+    this.openingNameRevealTimeouts = [];
+
+    section?.classList.add('opening-names--manual-reveal');
+    [brideGroom, wreath, content].forEach((element) => {
+      element?.classList.remove('is-visible');
+    });
+
+    requestAnimationFrame(() => {
+      if (brideGroom) {
+        const brideGroomTimeout = window.setTimeout(() => brideGroom.classList.add('is-visible'), 0);
+        this.openingNameRevealTimeouts.push(brideGroomTimeout);
+      }
+      if (wreath) {
+        const wreathTimeout = window.setTimeout(() => wreath.classList.add('is-visible'), 900);
+        this.openingNameRevealTimeouts.push(wreathTimeout);
+      }
+      if (content) {
+        const contentTimeout = window.setTimeout(() => content.classList.add('is-visible'), 1400);
+        this.openingNameRevealTimeouts.push(contentTimeout);
+      }
+    });
+  }
 
   ngAfterViewInit(): void {
     this.prepareScratchCard();
@@ -64,9 +99,13 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     this.sectionRevealObserver = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
-          entry.target.classList.add('is-visible');
+          if (!entry.target.classList.contains('opening-names')) {
+            entry.target.classList.add('is-visible');
+          }
         } else {
-          entry.target.classList.remove('is-visible');
+          if (!entry.target.classList.contains('opening-names')) {
+            entry.target.classList.remove('is-visible');
+          }
         }
       });
     }, {
@@ -158,7 +197,12 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     this.startBackgroundMusic();
     window.setTimeout(() => {
       this.entered = true;
-      requestAnimationFrame(() => document.getElementById('invitation')?.scrollIntoView({ behavior: 'smooth' }));
+      requestAnimationFrame(() => {
+        document.getElementById('invitation')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        window.setTimeout(() => {
+          requestAnimationFrame(() => this.triggerOpeningNameReveal());
+        }, 700);
+      });
     }, 760);
   }
 
